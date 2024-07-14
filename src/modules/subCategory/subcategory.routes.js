@@ -9,7 +9,7 @@ import {
 import { subcategoryValidation } from "./subcategory.validation.js";
 import { validate } from "../../middleware/validate.js";
 
-const subcategoryRouter = Router();
+const subcategoryRouter = Router({ mergeParams: true });
 
 // 1-Add subcategory
 subcategoryRouter.post("/", validate(subcategoryValidation), addSubcategory);

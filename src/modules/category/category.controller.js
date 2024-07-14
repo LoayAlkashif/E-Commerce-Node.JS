@@ -2,33 +2,40 @@ import { Category } from "../../../database/models/category.model.js";
 import { catchError } from "../../middleware/catchError.js";
 import { AppError } from "../../utils/appError.js";
 import slugify from "slugify";
+import fs from "fs";
+import path from "path";
+import {
+  addDocument,
+  deleteOne,
+  getAllDocuments,
+  getDocument,
+} from "../handlers/handlers.js";
 
 // 1-Add category
-const addCategory = catchError(async (req, res, next) => {
-  req.body.slug = slugify(req.body.name);
-  let category = await Category(req.body);
-  await category.save();
-  res.status(201).json({ message: "success", category });
-});
+const addCategory = addDocument(Category);
 
 // 2-Get all categories
-const getAllCategories = catchError(async (req, res) => {
-  let categories = await Category.find();
-
-  res.status(200).json({ message: "success", categories });
-});
+const getAllCategories = getAllDocuments(Category);
 
 // 3-Get category
-const getCategory = catchError(async (req, res) => {
-  let category = await Category.findById(req.params.id);
-  if (!category) return next(new AppError("category not found", 404));
-
-  res.status(200).json({ message: "success", category });
-});
+const getCategory = getDocument(Category);
 
 // 4-Update category
 const updateCategory = catchError(async (req, res, next) => {
-  req.body.slug = slugify(req.body.name);
+  if (req.body.slug) req.body.slug = slugify(req.body.name);
+
+  if (req.file) {
+    const existCategory = await Category.findById(req.params.id);
+    if (!existCategory) return next(new AppError("category not found", 404));
+
+    if (existCategory.image) {
+      const oldImg = path.join(__dirname, "uploads", existCategory.image);
+      fs.unlinkSync(oldImg);
+    }
+
+    req.body.image = req.file.filename;
+  }
+
   let category = await Category.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });
@@ -37,11 +44,7 @@ const updateCategory = catchError(async (req, res, next) => {
 });
 
 // 5-Delete category
-const deleteCategory = catchError(async (req, res, next) => {
-  let category = await Category.findByIdAndDelete(req.params.id);
-  if (!category) return next(new AppError("category not found", 404));
-  res.status(200).json({ message: "success", category });
-});
+const deleteCategory = deleteOne(Category);
 
 export {
   addCategory,

@@ -60,4 +60,11 @@ const schema = new Schema(
   { timestamps: true, versionKey: false }
 );
 
+schema.post("init", function (doc) {
+  doc.imageCover = "http://localhost:3000/uploads/products/" + doc.imageCover;
+  doc.images = doc.images.map(
+    (img) => "http://localhost:3000/uploads/products/" + img
+  );
+});
+
 export const Product = model("Product", schema);

@@ -8,11 +8,17 @@ import {
 } from "./brand.controller.js";
 import { brandValidation } from "./brand.validation.js";
 import { validate } from "../../middleware/validate.js";
+import { uploadSingleFile } from "../../fileUpload/fileUpload.js";
 
 const brandRouter = Router();
 
 // 1-Add brand
-brandRouter.post("/", validate(brandValidation), addBrand);
+brandRouter.post(
+  "/",
+  uploadSingleFile("logo", "brands"),
+  validate(brandValidation),
+  addBrand
+);
 
 // 2-Get all brands
 brandRouter.get("/", getAllBrands);
@@ -21,7 +27,7 @@ brandRouter.get("/", getAllBrands);
 brandRouter.get("/:id", getBrand);
 
 // 4-Update Brand
-brandRouter.put("/:id", updateBrand);
+brandRouter.put("/:id", uploadSingleFile("logo", "brands"), updateBrand);
 
 // 5-Delete Brand
 brandRouter.delete("/:id", deleteBrand);

@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const brandSchema = new Schema(
+const schema = new Schema(
   {
     name: { type: String, unique: true },
     slug: String,
@@ -13,4 +13,8 @@ const brandSchema = new Schema(
   }
 );
 
-export const Brand = model("Brand", brandSchema);
+schema.post("init", function (doc) {
+  doc.logo = "http://localhost:3000/uploads/brands/" + doc.logo;
+});
+
+export const Brand = model("Brand", schema);

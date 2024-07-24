@@ -1,11 +1,12 @@
 import express from "express";
 import { AppError } from "./src/utils/appError.js";
 import { globalError } from "./src/middleware/globalError.js";
-import dotenv from "dotenv";
 import { bootstrap } from "./src/bootstrap.js";
 import { dbConnection } from "./database/dbConnection.js";
+import dotenv from "dotenv";
 
 dotenv.config();
+
 const app = express();
 const port = 3000;
 

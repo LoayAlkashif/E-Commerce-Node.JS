@@ -57,14 +57,27 @@ const schema = new Schema(
     },
     rateCount: Number,
   },
-  { timestamps: true, versionKey: false }
+  { timestamps: true, versionKey: false, toJSON: { virtuals: true }, id: false } // y4eel id elwahme
 );
 
 schema.post("init", function (doc) {
-  doc.imageCover = "http://localhost:3000/uploads/products/" + doc.imageCover;
-  doc.images = doc.images.map(
-    (img) => "http://localhost:3000/uploads/products/" + img
-  );
+  if (imageCover)
+    doc.imageCover = process.env.BASE_URL + "products/" + doc.imageCover;
+  if (images)
+    doc.images = doc.images.map(
+      (img) => process.env.BASE_URL + "products/" + img
+    );
+});
+
+//key wahme
+schema.virtual("myReviews", {
+  ref: "Review",
+  localField: "_id", // id bta3 el product
+  foreignField: "product", // foriegn key beta3 el product fe el model bta3 El Review n4ofoh msamyenoh eh w n7toh hna
+});
+
+schema.pre("findOne", function () {
+  this.populate("myReviews");
 });
 
 export const Product = model("Product", schema);

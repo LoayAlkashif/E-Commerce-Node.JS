@@ -1,9 +1,12 @@
+import slugify from "slugify";
 import { catchError } from "../../middleware/catchError.js";
+import { ApiFeature } from "../../utils/apiFeature.js";
 
 // refactor add document
 export const addDocument = (model) => {
   return catchError(async (req, res, next) => {
     req.body.slug = slugify(req.body.name);
+
     if (req.body.logo) {
       req.body.logo = req.file.filename;
     } else {
@@ -29,26 +32,29 @@ export const getDocument = (model) => {
 // refactor get all and handle pagination
 export const getAllDocuments = (model) => {
   return catchError(async (req, res) => {
-    let pageNumber = req.query.page * 1 || 1;
-    if (pageNumber < 1) pageNumber = 1;
-    let limit = 2;
-    let skip = (pageNumber - 1) * limit;
+    let apiFeatures = new ApiFeature(model.find(), req.query)
+      .filter()
+      .sort()
+      .fields()
+      .search()
+      .pagination();
 
     // Get the total number of model
     let totalDocuments = await model.countDocuments();
-    let totalPages = Math.ceil(totalDocuments / limit);
-
-    // get documents
-    let documents = await model.find().skip(skip).limit(limit);
+    let totalPages = Math.ceil(totalDocuments / apiFeatures.limit);
 
     // pagination info
     let paginationInfo = {
-      currentPage: pageNumber,
+      currentPage: apiFeatures.pageNumber,
       totalPages: totalPages,
       totalItems: totalDocuments,
-      nextPage: pageNumber < totalPages ? pageNumber + 1 : null,
-      previousPage: pageNumber > 1 ? pageNumber - 1 : null,
+      nextPage:
+        apiFeatures.pageNumber < totalPages ? apiFeatures.pageNumber + 1 : null,
+      previousPage:
+        apiFeatures.pageNumber > 1 ? apiFeatures.pageNumber - 1 : null,
     };
+    // get documents
+    let documents = await apiFeatures.mongooseQuery;
 
     res
       .status(200)

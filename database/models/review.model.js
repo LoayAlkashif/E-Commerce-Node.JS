@@ -16,9 +16,14 @@ const schema = new Schema(
     product: {
       type: Types.ObjectId,
       ref: "Product",
+      required: true,
     },
   },
   { timestamps: true, versionKey: false }
 );
+
+schema.pre([/^find/], function () {
+  this.populate("user", "name");
+});
 
 export const Review = model("Review", schema);

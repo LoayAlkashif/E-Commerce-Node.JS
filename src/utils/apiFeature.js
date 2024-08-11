@@ -35,7 +35,7 @@ export class ApiFeature {
 
   sort() {
     if (this.searchQuery.sort) {
-      let sortedBy = req.query.sort.split(",").join(" ");
+      let sortedBy = this.searchQuery.sort.split(",").join(" ");
 
       this.mongooseQuery.sort(sortedBy);
     }

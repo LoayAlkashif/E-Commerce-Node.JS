@@ -14,7 +14,6 @@ const schema = new Schema(
       lowercase: true,
       required: true,
     },
-    logo: String,
     description: {
       type: String,
       required: true,

@@ -9,6 +9,7 @@ import wishlistRouter from "./modules/wishlist/wishlist.routes.js";
 import addressRouter from "./modules/adress/adress.routes.js";
 import couponRouter from "./modules/coupon/coupon.routes.js";
 import cartRouter from "./modules/cart/cart.routes.js";
+import orderRouter from "./modules/order/order.routes.js";
 
 export const bootstrap = (app) => {
   app.use("/api/categories", categoryRouter);
@@ -22,4 +23,5 @@ export const bootstrap = (app) => {
   app.use("/api/addresses", addressRouter);
   app.use("/api/coupons", couponRouter);
   app.use("/api/carts", cartRouter);
+  app.use("/api/orders", orderRouter);
 };

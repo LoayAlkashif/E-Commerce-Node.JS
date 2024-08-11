@@ -31,7 +31,7 @@ export const getDocument = (model) => {
 
 // refactor get all and handle pagination
 export const getAllDocuments = (model) => {
-  return catchError(async (req, res) => {
+  return catchError(async (req, res, next) => {
     let apiFeatures = new ApiFeature(model.find(), req.query)
       .filter()
       .sort()

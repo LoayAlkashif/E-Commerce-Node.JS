@@ -10,7 +10,7 @@ import {
 
 // 1-Add brand
 const addProduct = catchError(async (req, res, next) => {
-  req.body.slug = slugify(req.body.name);
+  req.body.slug = slugify(req.body.title);
   req.body.imageCover = req.files.imageCover[0].filename;
   req.body.images = req.files.images.map((img) => img.filename);
   let product = await Product(req.body);

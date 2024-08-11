@@ -10,7 +10,7 @@ const schema = new Schema(
         price: Number,
       },
     ],
-    totalCartPrice: Number.EPSILON,
+    totalCartPrice: Number,
     discount: Number,
     totalCartPriceAfterDiscount: Number,
   },

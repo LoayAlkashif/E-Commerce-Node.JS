@@ -4,6 +4,9 @@ import { AppError } from "../../utils/appError.js";
 import { Cart } from "../../../database/models/cart.model.js";
 import { Product } from "../../../database/models/product.model.js";
 import { Order } from "../../../database/models/order.model.js";
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 import Stripe from "stripe";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -39,7 +42,7 @@ const createCashOrder = catchError(async (req, res, next) => {
 
   res.json({ message: "Success", order });
 });
-// merge param
+
 const getUserOrder = catchError(async (req, res, next) => {
   let orders = await Order.findOne({ user: req.user._id }).populate(
     "orderItems.product"
@@ -59,7 +62,7 @@ const createCheckOutSession = catchError(async (req, res, next) => {
   if (!cart) return next(new AppError("Cart not found", 404));
   let totalOrderPrice = cart.totalCartPriceAfterDiscount || cart.totalCartPrice;
 
-  let session = stripe.checkout.sessions.create({
+  let session = await stripe.checkout.sessions.create({
     line_items: [
       {
         price_data: {
@@ -73,17 +76,14 @@ const createCheckOutSession = catchError(async (req, res, next) => {
       },
     ],
     mode: "payment",
-    success_url: "https://hambozo.netlify.app/#/orders", // lma ydf3 hyroo7 feen
-    cancel_url: "https://hambozo.netlify.app/#/cart", // lma ycancel el order aw yerg3 yroo7 feen
-
+    success_url: "https://hambozo.netlify.app/#/orders",
+    cancel_url: "https://hambozo.netlify.app/#/cart",
     customer_email: req.user.email,
     client_reference_id: req.params.id,
     metadata: req.body.shippingAddress,
   });
 
+  // Return the session from Stripe
   res.json({ message: "Success", session });
 });
 export { createCashOrder, getOrders, getUserOrder, createCheckOutSession };
-
-// e-commerce
-// 0niXGXchFcc1Ah1v

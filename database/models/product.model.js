@@ -60,9 +60,9 @@ const schema = new Schema(
 );
 
 schema.post("init", function (doc) {
-  if (imageCover)
+  if (doc.imageCover)
     doc.imageCover = process.env.BASE_URL + "products/" + doc.imageCover;
-  if (images)
+  if (doc.images)
     doc.images = doc.images.map(
       (img) => process.env.BASE_URL + "products/" + img
     );
@@ -72,7 +72,7 @@ schema.post("init", function (doc) {
 schema.virtual("myReviews", {
   ref: "Review",
   localField: "_id", // id bta3 el product
-  foreignField: "product", // foriegn key beta3 el product fe el model bta3 El Review n4ofoh msamyenoh eh w n7toh hna
+  foreignField: "product", // foriegn key beta3 el product fe el model bta3 El Review 
 });
 
 schema.pre("findOne", function () {

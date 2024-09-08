@@ -1,15 +1,16 @@
-import { catchError } from "../../middleware/catchError.js";
 import { AppError } from "../../utils/appError.js";
 
 import { Cart } from "../../../database/models/cart.model.js";
 import { Product } from "../../../database/models/product.model.js";
 import { Coupon } from "../../../database/models/coupon.model.js";
+import { catchError } from "../../middleware/catchError.js";
 
 function calcTotalPrice(isCartExist) {
   // total cartPrice
-  isCartExist.totalCartPrice = isCartExist.cartItems.reduce((prev, item) => {
-    prev += item.quantity * item.price;
-  }, 0);
+  isCartExist.totalCartPrice = isCartExist.cartItems.reduce(
+    (prev, item) => (prev += item.quantity * item.price),
+    0
+  );
   if (isCartExist.discount) {
     isCartExist.totalCartPriceAfterDiscount =
       isCartExist.totalCartPrice -
@@ -35,7 +36,7 @@ const addToCart = catchError(async (req, res, next) => {
       cartItems: [req.body],
     });
     // calac total price
-    totalCartPrice(cart);
+    calcTotalPrice(cart);
     await cart.save();
     res.status(201).json({ message: "success", cart });
   } else {
@@ -92,12 +93,12 @@ const removeItemFromCart = catchError(async (req, res, next) => {
 const getLoggedUserCart = catchError(async (req, res, next) => {
   let cart = await Cart.findOne({ user: req.user._id });
 
-  res.json({ message: "success", cart });
+  res.status(200).json({ message: "success", cart });
 });
 
 const clearUserCart = catchError(async (req, res, next) => {
   let cart = await Cart.findOneAndDelete({ user: req.user._id });
-  res.status(201).json({ message: "success", cart });
+  res.status(200).json({ message: "success", cart });
 });
 
 const applyCoupon = catchError(async (req, res, next) => {
@@ -107,12 +108,13 @@ const applyCoupon = catchError(async (req, res, next) => {
   });
   if (!coupon) return next(new AppError("Opps!, coupoun invalid", 404));
   let cart = await Cart.findOne({ user: req.user._id });
+  if (!cart) return next(new AppError("Cart not found", 404)); 
 
-  cart.discount = cart.discount;
+  cart.discount = coupon.discount;
   calcTotalPrice(cart);
   await cart.save();
 
-  res.status(201).json({ message: "success", cart });
+  res.status(200).json({ message: "success", cart });
 });
 export {
   addToCart,

@@ -10,7 +10,7 @@ import { Coupon } from "../../../database/models/coupon.model.js";
 // 1-Add brand
 const addCoupon = catchError(async (req, res, next) => {
   let isExist = await Coupon.findOne({ code: req.body.code });
-  if (isExist) next(new AppError("coupon not found", 404));
+  if (isExist) next(new AppError("coupon is already exist", 404));
   let coupon = new Coupon(req.body);
   await coupon.save();
 

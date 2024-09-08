@@ -1,13 +1,21 @@
 import slugify from "slugify";
-import { catchError } from "../../middleware/catchError.js";
 import { ApiFeature } from "../../utils/apiFeature.js";
+import { catchError } from "../../middleware/catchError.js";
+import { AppError } from "../../utils/appError.js";
+
+import fs from "fs";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // refactor add document
 export const addDocument = (model) => {
   return catchError(async (req, res, next) => {
     req.body.slug = slugify(req.body.name);
 
-    if (req.body.logo) {
+    if (req.file && req.file.fieldname === "logo") {
       req.body.logo = req.file.filename;
     } else {
       req.body.image = req.file.filename;
@@ -66,7 +74,60 @@ export const getAllDocuments = (model) => {
 export const deleteOne = (model) => {
   return catchError(async (req, res, next) => {
     let document = await model.findByIdAndDelete(req.params.id);
+
     if (!document) return next(new AppError("document not found", 404));
+
+    // Function to delete a file if it exists
+    const deleteFile = (filePath) => {
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      } else {
+        console.error(`File not found: ${filePath}`);
+      }
+    };
+
+    // Delete logo if it exists (used in brands)
+    if (document.logo) {
+      const logoPath = path.join(
+        __dirname,
+        "../../../uploads/brands",
+        path.basename(document.logo)
+      );
+      deleteFile(logoPath);
+    }
+
+    // Delete image if it exists (used in categories)
+    if (document.image) {
+      const imagePath = path.join(
+        __dirname,
+        "../../../uploads/categories",
+        path.basename(document.image)
+      );
+      deleteFile(imagePath);
+    }
+
+    // Delete imageCover if it exists (used in products)
+    if (document.imageCover) {
+      const imageCoverPath = path.join(
+        __dirname,
+        "../../../uploads/products",
+        path.basename(document.imageCover)
+      );
+      deleteFile(imageCoverPath);
+    }
+
+    // Delete images if they exist (used in products)
+    if (document.images && document.images.length > 0) {
+      document.images.forEach((img) => {
+        const imagePath = path.join(
+          __dirname,
+          "../../../uploads/products",
+          path.basename(img)
+        );
+        deleteFile(imagePath);
+      });
+    }
+
     res.status(200).json({ message: "success", document });
   });
 };

@@ -16,6 +16,6 @@ addressRouter.patch("/", protectedRoutes, allowedTo("user"), addAddress);
 addressRouter.get("/", protectedRoutes, allowedTo("user"), getLoggedAddresses);
 
 // delete address
-addressRouter.delete("/id", protectedRoutes, allowedTo("user"), removeAdresses);
+addressRouter.delete("/:id", protectedRoutes, allowedTo("user"), removeAdresses);
 
 export default addressRouter;

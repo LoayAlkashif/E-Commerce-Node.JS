@@ -18,7 +18,7 @@ const categoryRouter = Router();
 categoryRouter.post(
   "/",
   protectedRoutes,
-  allowedTo("user", "admin", "mgr"),
+  allowedTo( "admin", "mgr"),
   uploadSingleFile("image", "categories"),
   validate(categoryValidation),
   addCategory

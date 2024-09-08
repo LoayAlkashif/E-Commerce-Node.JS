@@ -46,7 +46,7 @@ const getSubcategory = catchError(async (req, res, next) => {
 
 // 4-Update Subcategory
 const updateSubcategory = catchError(async (req, res, next) => {
-  req.body.slug = slugify(req.body.name);
+  if (req.body.name) req.body.slug = slugify(req.body.name);
   let subcategory = await Subcategory.findByIdAndUpdate(
     req.params.id,
     req.body,

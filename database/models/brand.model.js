@@ -14,7 +14,9 @@ const schema = new Schema(
 );
 
 schema.post("init", function (doc) {
-  doc.logo = process.env.BASE_URL + "brands/" + doc.logo;
+  if (doc.logo) {
+    doc.logo = `${process.env.BASE_URL}brands/${doc.logo}`;
+  }
 });
 
 export const Brand = model("Brand", schema);

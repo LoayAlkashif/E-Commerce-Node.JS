@@ -1,7 +1,5 @@
 import { Router } from "express";
 
-import { brandValidation } from "./product.validation.js";
-import { validate } from "../../middleware/validate.js";
 import {
   addProduct,
   deleteProduct,

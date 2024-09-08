@@ -1,4 +1,3 @@
-import { catchError } from "../../middleware/catchError.js";
 import { AppError } from "../../utils/appError.js";
 import {
   deleteOne,
@@ -6,10 +5,11 @@ import {
   getDocument,
 } from "../handlers/handlers.js";
 import { User } from "../../../database/models/user.model.js";
+import { catchError } from "../../middleware/catchError.js";
 
 // 1-Add User
 const addUser = catchError(async (req, res, next) => {
-  let user = await model(req.body);
+  let user = await User(req.body);
   await user.save();
   res.status(201).json({ message: "success", user });
 });

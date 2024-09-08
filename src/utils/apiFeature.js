@@ -46,8 +46,8 @@ export class ApiFeature {
     //=================== 4- selected Fields ===============
 
     if (this.searchQuery.fields) {
-      let selectedFieldsed = this.searchQuery.fields.split(",").join(" ");
-      this.mongooseQuery.select(selectedFieldsed);
+      let selectedFields = this.searchQuery.fields.split(",").join(" ");
+      this.mongooseQuery.select(selectedFields);
     }
     return this;
   }

@@ -15,6 +15,6 @@ authRouter.post("/signup", checkEmail, signup);
 // 2-Get all brands
 authRouter.post("/signin", signin);
 
-authRouter.patch("/changepassword", protectedRoutes, changeUserPassword);
+authRouter.patch("/change-password", protectedRoutes, changeUserPassword);
 
 export default authRouter;

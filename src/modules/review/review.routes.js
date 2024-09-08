@@ -21,7 +21,7 @@ reviewRouter.get("/", getAllReviews);
 reviewRouter.get("/:id", getReview);
 
 // 4-Update Review
-reviewRouter.put("/:id", updateReview);
+reviewRouter.put("/:id", protectedRoutes, allowedTo("user"), updateReview);
 
 // 5-Delete Review
 reviewRouter.delete(

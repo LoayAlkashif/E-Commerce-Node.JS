@@ -1,4 +1,4 @@
-import { model, Schema, Types } from "mongoose";
+import { model, Schema } from "mongoose";
 
 const schema = new Schema(
   {
@@ -15,4 +15,3 @@ const schema = new Schema(
 
 export const Coupon = model("Coupon", schema);
 
-// task ====> aye copoun expire delete it from database

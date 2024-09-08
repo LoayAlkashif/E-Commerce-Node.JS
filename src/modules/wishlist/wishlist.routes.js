@@ -18,7 +18,7 @@ wishlistRouter.get(
   getLoggedWithWishList
 );
 wishlistRouter.delete(
-  "/id",
+  "/:id",
   protectedRoutes,
   allowedTo("user"),
   removeFromWishList

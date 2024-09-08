@@ -6,7 +6,7 @@ import {
   getBrand,
   updateBrand,
 } from "./brand.controller.js";
-import { brandValidation } from "./brand.validation.js";
+import { brandValidation, updateValidation } from "./brand.validation.js";
 import { validate } from "../../middleware/validate.js";
 import { uploadSingleFile } from "../../fileUpload/fileUpload.js";
 
@@ -30,6 +30,6 @@ brandRouter.get("/:id", getBrand);
 brandRouter.put("/:id", uploadSingleFile("logo", "brands"), updateBrand);
 
 // 5-Delete Brand
-brandRouter.delete("/:id", deleteBrand);
+brandRouter.delete("/:id",deleteBrand);
 
 export default brandRouter;

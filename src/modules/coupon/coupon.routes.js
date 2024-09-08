@@ -11,19 +11,20 @@ import { allowedTo, protectedRoutes } from "../auth/auth.controller.js";
 
 const couponRouter = Router();
 
-// 1-Add brand
-couponRouter.post("/", protectedRoutes, allowedTo("admin"), addCoupon);
+couponRouter.use(protectedRoutes, allowedTo("admin"),)
+// 1-Add coupons
+couponRouter.post("/",  addCoupon);
 
-// 2-Get all brands
+// 2-Get all coupons
 couponRouter.get("/", getAllCoupons);
 
-// 3-Get Brand
+// 3-Get coupons
 couponRouter.get("/:id", getCoupon);
 
-// 4-Update Brand
+// 4-Update coupons
 couponRouter.put("/:id", updateCoupon);
 
-// 5-Delete Brand
+// 5-Delete coupons
 couponRouter.delete("/:id", deleteCoupon);
 
 export default couponRouter;
